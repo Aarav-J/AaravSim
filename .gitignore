@@ -1,0 +1,5 @@
+# Ignore the virtual environment directory
+server/venv/
+
+# Ignore server_test.py specifically
+server/server_test.py
