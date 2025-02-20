@@ -1,11 +1,9 @@
-
-# A very simple Flask Hello World app for you to get started with...
-
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
 import yfinance as yf
 from datetime import datetime
 app = Flask(__name__)
-
+# CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 @app.route('/')
 def hello_world():
     return 'Hello from Flask!'
@@ -32,13 +30,19 @@ def format_number(num):
         return str(num)
 
 # Fetch stock history
-def get_history(ticker, period):
-    stock = yf.Ticker(ticker)
-    history = stock.history(period=period)
 
-    # Ensure index (datetime) and columns are JSON-serializable
-    history.index = history.index.astype(str)  # Convert DatetimeIndex to string
-    return history.to_dict()
+def get_history(ticker, period, interval=None):
+    history = yf.download(ticker, period=period, interval=interval)
+    
+    # Convert the index (dates) to strings.
+    history.index = history.index.astype(str)
+    
+    # Convert all column names to strings.
+    history.columns = [str(col) for col in history.columns]
+    
+    # Build a dictionary with dates as keys.
+    history_dict = {date: row.to_dict() for date, row in history.iterrows()}
+    return history_dict
 # Fetch stock recommendations
 def get_recommendation(ticker):
     stock = yf.Ticker(ticker)
@@ -82,16 +86,17 @@ def get_stock_info(ticker):
     try:
         return {
             'name': safe_get("shortName", "Unknown"),
+            'website': safe_get("website", "N/A"),
             "symbol": safe_get("symbol", ticker),
             "shortDescription": safe_get("longBusinessSummary", "No description available."),
             "currentPrice": safe_get("currentPrice"),
             "history": {
-                "1d": get_history(ticker, "1d"),
-                "5d": get_history(ticker, "5d"),
-                "1m": get_history(ticker, "1mo"),
-                "6m": get_history(ticker, "6mo"),
-                "1y": get_history(ticker, "1y"),
-                "5y": get_history(ticker, "5y")
+                "1d": get_history(ticker, "1d", interval="1h"),
+                "5d": get_history(ticker, "5d", interval="1d"),
+                "1m": get_history(ticker, "1mo", interval="1d"),
+                "6m": get_history(ticker, "6mo", interval="1wk"),
+                "1y": get_history(ticker, "1y", interval="1wk"),
+                "5y": get_history(ticker, "5y", interval="1mo"),
             },
             "priceStats": {
                 "dayLow": safe_get("dayLow"),
