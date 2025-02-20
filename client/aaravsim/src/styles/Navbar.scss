@@ -1,0 +1,190 @@
+
+$bg-color: #141221;
+$main-color:  #fd77d7;
+$text-color: #dde5ed;
+$accent-color: #CF6BDD;
+$sub-color: #676e8a;
+$sub-alt-color: #1e1d2f;
+$error-color: #ff5869;
+
+
+@mixin scrollbar(){
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 12px;
+        background-color: $sub-alt-color;
+    }
+    &::-webkit-scrollbar-thumb {
+        height: 6px;
+        // border: 4px solid $accent-color;
+        background-clip: padding-box;
+        border-radius: 7px;
+        background-color: rgba($main-color, $alpha: 0.2);
+        box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+    }
+    &::-webkit-scrollbar-button {
+        width: 0;
+        height: 0;
+        display: none;
+    }
+    &::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
+  
+  }
+
+.inputcontainer { 
+    display: flex; 
+    justify-content: center;
+    flex-direction: row;
+    .stockSearchInput { 
+        background-color: transparent;
+        border: 1.2px solid $main-color; 
+        border-right: none;
+        border-radius: 6px; 
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        outline: none; 
+        padding: 0.8rem; 
+        color: $text-color;
+        font-family: 'Montserrat', sans-serif; 
+        transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1); // Smoother transition
+        &::placeholder { 
+            color: $sub-color; 
+        }
+        &:focus{
+            background-color: rgba($accent-color, $alpha: 0.15);
+            border: none; 
+            // border-bottom-right-radius: 0;
+            // border-bottom-left-radius: 0;
+            ~ { 
+                .typeButton { 
+                    border: none; 
+                }
+            } 
+
+        }
+    }
+    .typeButton { 
+        display: flex; 
+        justify-content: center; 
+        width: 9%; 
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+        align-items: center;
+        border: 1.2px solid $main-color;
+        border-right: none; 
+        border-left: none; 
+        background-color: rgba($accent-color, $alpha: 0.15);
+        font-size: large;
+        .icon { 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Smoother transition
+            // transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Smoother transition
+            will-change: transform; // Optimizes rendering performance
+            color: $error-color
+        }
+        &:hover {
+            .icon {
+              transform: scale(1.15);  // Slightly increase size on hover
+            }
+          }
+
+    }
+
+    .typeButton.tickerButton { 
+        border-top-right-radius: 6px; 
+        border-bottom-right-radius: 6px; 
+        border-right: 1.2px solid $main-color;
+    }
+
+    
+}
+
+
+.suggestions {
+    position: absolute;
+    // top: calc(100% + 4px); // small gap below the input container
+    left: 0;
+    right: 0;
+    @include scrollbar();
+    // border: 1px solid $main-color;
+    border-top: none; // attach to the input container
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    max-height: 7.5rem; // limit to roughly 3 items (adjust based on your item height)
+    overflow-y: auto; // allow scrolling when there are more than 3 items
+    z-index: 10; // ensure it appears above other elements
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .suggestionItem {
+    padding: 0.5rem;
+    // Optionally, if you want a fixed height:
+    // height: 2.5rem;
+    text-align: left;
+    // background: white;
+    border: none;
+    background: rgba($sub-alt-color, 1);
+    // border-bottom: 1px solid $main-color;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex; 
+    // width: 100%; 
+    .rightSide { 
+        display: flex; 
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        // width: 50%;
+        .ticker { 
+            color: $main-color; 
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .name {
+            color: $text-color; 
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300; 
+            font-size: 0.8rem; 
+        }
+    }
+
+    
+    &:hover {
+      background: rgba($accent-color, 1);
+    }
+  
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  .searchWrapper {
+    position: relative;
+    // width: 100%; // adjust as needed
+    max-width: 400px; // for example
+    margin: 0 auto;
+  }
+
+.navbar { 
+    position: relative;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    background-color: $bg-color;
+    z-index: 999; 
+    .searchArea { 
+        width: 40%;
+        .stockSearchInput { 
+            width: 100%; 
+           
+        }
+    }
+}
