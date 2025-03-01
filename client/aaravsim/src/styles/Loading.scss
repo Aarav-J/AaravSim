@@ -1,0 +1,103 @@
+@import "./Variables.scss";
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Full page/container overlay
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba($bg-color, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  border-radius: inherit;
+  
+  &.transparent {
+    background: rgba($bg-color, 0.7);
+  }
+  
+  &.light {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .loading-spinner {
+      color: $main-color;
+      filter: drop-shadow(0 0 8px rgba($main-color, 0.5));
+      width: 40px;
+      height: 40px;
+      animation: spin 1.2s linear infinite;
+    }
+    
+    .loading-message {
+      margin-top: 16px;
+      color: $text-color;
+      font-weight: 500;
+      text-shadow: 0 2px 4px rgba(0,0,0, 0.3);
+    }
+  }
+}
+
+// Inline loading indicator
+.loading-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  
+  .loading-spinner {
+    color: $main-color;
+    animation: spin 1.2s linear infinite;
+  }
+  
+  &.size-small .loading-spinner {
+    width: 16px;
+    height: 16px;
+  }
+  
+  &.size-medium .loading-spinner {
+    width: 24px;
+    height: 24px;
+  }
+  
+  &.size-large .loading-spinner {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .loading-message {
+    color: $text-color;
+  }
+}
+
+// Button with loading state
+button.loading {
+  position: relative;
+  
+  .loading-button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    .loading-spinner {
+      width: 16px;
+      height: 16px;
+      animation: spin 1.2s linear infinite;
+    }
+  }
+}

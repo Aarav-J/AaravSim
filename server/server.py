@@ -75,67 +75,111 @@ def get_recommendation(ticker):
         }
 
 # Fetch stock info
-def get_stock_info(ticker):
+
+
+def get_meta_info(ticker): 
     stock = yf.Ticker(ticker)
-    info = stock.info
-
-    # Helper function for safely getting values
-    def safe_get(key, default=None):
+    info = stock.info 
+    def safe_get(key, default=None): 
         return info.get(key, default)
-
-    try:
+    try: 
         return {
             'name': safe_get("shortName", "Unknown"),
             'website': safe_get("website", "N/A"),
-            "symbol": safe_get("symbol", ticker),
-            "shortDescription": safe_get("longBusinessSummary", "No description available."),
-            "currentPrice": safe_get("currentPrice"),
-            "history": {
-                "1d": get_history(ticker, "1d", interval="1h"),
-                "5d": get_history(ticker, "5d", interval="1d"),
-                "1m": get_history(ticker, "1mo", interval="1d"),
-                "6m": get_history(ticker, "6mo", interval="1wk"),
-                "1y": get_history(ticker, "1y", interval="1wk"),
-                "5y": get_history(ticker, "5y", interval="1mo"),
-            },
-            "priceStats": {
-                "dayLow": safe_get("dayLow"),
-                "dayHigh": safe_get("dayHigh"),
-                "fiftyTwoWeekLow": safe_get("fiftyTwoWeekLow"),
-                "fiftyTwoWeekHigh": safe_get("fiftyTwoWeekHigh"),
-                "open": safe_get("regularMarketOpen")
-            },
-            "marketCap": format_number(safe_get("marketCap", 0)),
-            "volume": format_number(safe_get("regularMarketVolume", 0)),
-            "P/E": (safe_get("currentPrice") / safe_get("trailingEps")) if safe_get("trailingEps") else None,
-            "EPS": safe_get("trailingEps"),
-            "beta": safe_get("beta"),
-            "P/S": safe_get("priceToSalesTrailing12Months"),
-            "P/B": safe_get("priceToBook"),
-            "dividendRate": safe_get("dividendRate"),
-            "dividendYield": safe_get("dividendYield"),
-            "revenue": format_number(safe_get("totalRevenue", 0)),
-            "netIncome": format_number(safe_get("netIncomeToCommon", 0)),
-            "PEG": safe_get("trailingPegRatio"),
-            "recommendation": get_recommendation(ticker)
+            'symbol': safe_get("symbol", ticker),
+            'shortDescription': safe_get("longBusinessSummary", "No description available."),
         }
     except Exception as e:
         # Log the error for debugging and return minimal data with the error message
         return {
             "error": f"Failed to retrieve stock info for {ticker}: {str(e)}"
         }
+def get_price_info(ticker): 
+    stock = yf.Ticker(ticker)
+    info = stock.info 
+    
+    def safe_get(key, default=None): 
+        return info.get(key, default)
+    data = get_history(ticker, "1d", interval="1m")
+    date = list(data.keys())[-1]
+    current_price = data[date]
+    key = f"('Close', '{info.get('symbol', ticker)}')"
+    current_price = current_price[key]
+    reco = get_recommendation(ticker)
+    try:  
+        return {
+            'currentPrice': current_price, 
+            'recommendations': reco
+        }
+    except Exception as e:
+        return {
+            "error": f"Failed to retrieve stock info for {ticker}: {str(e)}"
+        }
+# def get_stock_info(ticker):
+#     stock = yf.Ticker(ticker)
+#     info = stock.info
+#     data = get_history(ticker, "1d", interval="1m")
+#     date = list(data.keys())[-1]
+#     current_price = data[date]
+#     key = f"('Close', '{info.get('symbol', ticker)}')"
+#     print(current_price[key])
+#     # Helper function for safely getting values
+#     def safe_get(key, default=None):
+#         return info.get(key, default)
+#     # current_price[f"('Close', '{info.safe_get('symbol', ticker)}')"]
+#     try:
+#         return {
+#             'name': safe_get("shortName", "Unknown"),
+#             'website': safe_get("website", "N/A"),
+#             "symbol": safe_get("symbol", ticker),
+#             "shortDescription": safe_get("longBusinessSummary", "No description available."),
+#             "currentPrice": safe_get("currentPrice"),
+#             "history": {
+#                 "1d": get_history(ticker, "1d", interval="1m"),
+#                 "5d": get_history(ticker, "5d", interval="1d"),
+#                 "1m": get_history(ticker, "1mo", interval="1d"),
+#                 "6m": get_history(ticker, "6mo", interval="1wk"),
+#                 "1y": get_history(ticker, "1y", interval="1wk"),
+#                 "5y": get_history(ticker, "5y", interval="1mo"),
+#             },
+#             "priceStats": {
+#                 "dayLow": safe_get("dayLow"),
+#                 "dayHigh": safe_get("dayHigh"),
+#                 "fiftyTwoWeekLow": safe_get("fiftyTwoWeekLow"),
+#                 "fiftyTwoWeekHigh": safe_get("fiftyTwoWeekHigh"),
+#                 "open": safe_get("regularMarketOpen")
+#             },
+#             "marketCap": format_number(safe_get("marketCap", 0)),
+#             "volume": format_number(safe_get("regularMarketVolume", 0)),
+#             "P/E": (safe_get("currentPrice") / safe_get("trailingEps")) if safe_get("trailingEps") else None,
+#             "EPS": safe_get("trailingEps"),
+#             "beta": safe_get("beta"),
+#             "P/S": safe_get("priceToSalesTrailing12Months"),
+#             "P/B": safe_get("priceToBook"),
+#             "dividendRate": safe_get("dividendRate"),
+#             "dividendYield": safe_get("dividendYield"),
+#             "revenue": format_number(safe_get("totalRevenue", 0)),
+#             "netIncome": format_number(safe_get("netIncomeToCommon", 0)),
+#             "PEG": safe_get("trailingPegRatio"),
+#             "recommendation": get_recommendation(ticker)
+#         }
+#     except Exception as e:
+#         # Log the error for debugging and return minimal data with the error message
+#         return {
+#             "error": f"Failed to retrieve stock info for {ticker}: {str(e)}"
+#         }
 # Fetch news for the ticker
 def get_news(ticker):
     stock = yf.Ticker(ticker)
     news = stock.news
     return news if news else []
 
-@app.route('/api/stock/<ticker>', methods=['GET'])
-def stock_info(ticker):
+@app.route('/api/price/<ticker>', methods=['GET'])
+def stock_price(ticker):
     # api_key = request.args.get('api_key')
     # validate_api_key(api_key)  # Validate API key
     try:
-        data = get_stock_info(ticker)
+        data = get_price_info(ticker)
         return jsonify(data)
     except Exception as e:
         abort(400, description=str(e))
@@ -150,12 +194,12 @@ def stock_news(ticker):
     except Exception as e:
         abort(400, description=str(e))
 
-@app.route('/api/recommendation/<ticker>', methods=['GET'])
-def stock_recommendation(ticker):
+@app.route('/api/meta/<ticker>', methods=['GET'])
+def stock_meta(ticker):
     # api_key = request.args.get('api_key')
     # validate_api_key(api_key)  # Validate API key
     try:
-        data = get_recommendation(ticker)
+        data = get_meta_info(ticker)
         return jsonify(data)
     except Exception as e:
         abort(400, description=str(e))
