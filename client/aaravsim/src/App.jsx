@@ -1,49 +1,68 @@
-import { useEffect, useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-import StockTicker from './Components/StockTicker'
-import { getStockInfo, getNewsInfo, getRecommendationInfo, searchStock } from './utils/api'
-import Search from "./Components/Search"
-import useStore from "./store"
-import "./styles/Navbar.scss"
-import "./styles/Main.scss"
+import { useState, useEffect } from 'react'
+import AuthDashboard from './Components/AuthDashboard'
 import StockDashboard from './Components/StockDashboard'
-// import './App.css'
-const App =  () => {
-  // const [count, setCount] = useState(0)
-  const [period, setPeriod] = useState('1d')
-  const [searchResults, setSearchResults] = useState([])
-  // const {ticker} = useStore()
-  const ticker = useStore((state) => state.ticker)
-  const stockInfo = useStore((state) => state.stock_info)
-  const isLoading = useStore((state) => state.isLoading)
-  // const [period, setPeriod] = useState('1d')
-  // const history = null
-  // useEffect(() => { 
-  //   const response = getStockInfo('AAPL')
-  //   const history = response["history"][period]
-  //   console.log(history)
-  // }, [])
-  // const response = getStockInfo('AAPL')
-  // const history = response["history"][period]
-  // console.log(history)
+import UserDashboard from './Components/UserDashboard'
+import LandingPage from './Components/LandingPage'
+import Sidebar from './Components/Sidebar'
+import useStore from './store'
+import { Toaster } from 'react-hot-toast'
+import './styles/Navbar.scss'
+import './styles/Main.scss'
 
-  return (
-    <div className='App'>
-      <div className="navbar">
-        <div className="searchArea">
-          <Search />
-        </div>
-      </div>
-      <div className='main'>
-        <StockDashboard/>
-      </div>
+const App = () => {
+  const user = useStore((state) => state.user)
+  const selectedDashboard = useStore((state) => state.selectedDashboard)
+  const pendingUsername = useStore((state) => state.pendingUsername)
+  const setSelectedDashboard = useStore((state) => state.setSelectedDashboard)
+  
+  // Track auth state from a central place
+  useEffect(() => {
+    console.log("App effect running:", { user, selectedDashboard, pendingUsername })
     
-      {/* <p>Title: {ticker}</p> */}
-      {/* {!isLoading && stockInfo ? <img src={`https://logo.clearbit.com/${stockInfo.website}`} alt="" /> : <h1 style={{'color': "red"}}>whoops</h1>} */}
-      {/* <StockTicker ticker={ticker} period={period}/> */}
-
+    // Only redirect if user exists AND no pending username setup
+    if (user && selectedDashboard === 'auth' && !pendingUsername) {
+      console.log("Redirecting to home because user exists")
+      setSelectedDashboard('home')
+    }
+  }, [user, selectedDashboard, pendingUsername, setSelectedDashboard])
+  
+  const renderDashboard = () => {
+    // Force auth dashboard if we're setting up a username
+    if (pendingUsername) {
+      return <AuthDashboard />
+    }
+    
+    switch (selectedDashboard) {
+      case 'home':
+        return <UserDashboard />
+      case 'stock':
+        return <StockDashboard />
+      case 'profile':
+        return <UserDashboard />
+      case 'landing':
+        return <LandingPage />
+      case 'auth':
+        return <AuthDashboard />
+      default:
+        return <UserDashboard />
+    }
+  }
+  
+  // THE KEY FIX: Update navigation logic to account for pendingUsername
+  return (
+    <div className="App">
+      <Toaster position='top-right' />
+      
+      {selectedDashboard === 'landing' && !pendingUsername ? (
+        <LandingPage />
+      ) : (
+        <div className="app-container">
+          {user && selectedDashboard !== 'auth' && !pendingUsername && <Sidebar />}
+          <div className="main-content">
+            {renderDashboard()}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -3,3 +3,4 @@ server/venv/
 
 # Ignore server_test.py specifically
 server/server_test.py
+server_test/
