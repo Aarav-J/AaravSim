@@ -53,8 +53,8 @@ const StockTicker = () => {
         if (period === '1d') {
             if (stock_info.oneDayHistory) {
                 const key = `('Close', '${ticker}')`;
-                console.log(key)
-                console.log(stock_info.oneDayHistory['1d'])
+                // console.log(key)
+                // console.log(stock_info.oneDayHistory['1d'])
                 const formatted = Object.entries(stock_info.oneDayHistory['1d']).map(
                     ([date, value]) => ({
                         date: moment(date).format('MMM DD, YYYY h:mm A'),

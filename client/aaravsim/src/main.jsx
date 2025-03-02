@@ -12,7 +12,7 @@ async function startMockServiceWorker() {
         onUnhandledRequest: 'bypass', // Don't warn about unhandled requests
       });
     } catch (error) {
-      console.error('Error starting MSW:', error);
+      // console.error('Error starting MSW:', error);
     }
   }
   return Promise.resolve();

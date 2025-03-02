@@ -33,7 +33,7 @@ export const searchStock = async (type, searchParam) => {
    
 
     const response = axios.get(query_nas).then((response) => { 
-        console.log(response.data)
+        // console.log(response.data)
         return response.data.filter((stock) => stock.exchangeShortName == 'NASDAQ' || stock.exchangeShortName == 'NYSE')
     })
     return response
@@ -319,26 +319,26 @@ export const getStockHistory = async (symbol) => {
   // Get today's date in EST format (YYYY-MM-DD)
   const todayEST = getCurrentESTDate();
   
-  console.log(`Checking data for ${ticker}`);
-  console.log(supabase_data)
+  // console.log(`Checking data for ${ticker}`);
+  // console.log(supabase_data)
   if (supabase_data.data && supabase_data.data.length > 0) {
     
     // Check if we have historical data
     if (supabase_data.data[0].historical_data) {
       const lastUpdatedStr = supabase_data.data[0].last_updated;
-      console.log(`Last updated: ${lastUpdatedStr}`);
-      console.log(`Today: ${todayEST}`);
-      console.log(`Is same day: ${lastUpdatedStr === todayEST}`);
+      // console.log(`Last updated: ${lastUpdatedStr}`);
+      // console.log(`Today: ${todayEST}`);
+      // console.log(`Is same day: ${lastUpdatedStr === todayEST}`);
       
       // Check if data was updated today
       if (lastUpdatedStr === todayEST) {
-        console.log(`Using cached historical data for ${ticker}`);
+        // console.log(`Using cached historical data for ${ticker}`);
         return supabase_data.data[0].historical_data;
       }
     }
     
     // Data exists but is outdated or empty
-    console.log(`Fetching fresh historical data for ${ticker}`);
+    // console.log(`Fetching fresh historical data for ${ticker}`);
     const { startDate } = getStartEndDates('5y');
     let response_api = null;
     try {
@@ -353,11 +353,11 @@ export const getStockHistory = async (symbol) => {
         last_updated: todayEST,
         daily_stats: null // Always set daily_stats to null
       });
-      console.log(`Updated historical data with last_updated: ${todayEST}`);
+      // console.log(`Updated historical data with last_updated: ${todayEST}`);
       
       return response_api;
     } catch (error) {
-      console.error("Error fetching historical data:", error);
+      // console.error("Error fetching historical data:", error);
       // Return cached data even if outdated as fallback
       if (supabase_data.data[0].historical_data) {
         return supabase_data.data[0].historical_data;
@@ -441,7 +441,7 @@ export const getDailyStats = async (symbol) => {
 const initializeTickerData = async (symbol) => {
   const ticker = symbol.toUpperCase();
   
-  console.log(`Initializing data for ${ticker}`);
+  // console.log(`Initializing data for ${ticker}`);
   
   const { startDate } = getStartEndDates('5y');
   let response_historical = null;
@@ -453,7 +453,7 @@ const initializeTickerData = async (symbol) => {
     });
     response_historical = histResponse.data;
   } catch (error) {
-    console.error(`Error fetching historical data for ${ticker}:`, error);
+    // console.error(`Error fetching historical data for ${ticker}:`, error);
     response_historical = [];
   }
 
@@ -477,9 +477,9 @@ const initializeTickerData = async (symbol) => {
   });
   
   if (error) {
-    console.error(`Error upserting data for ${ticker}:`, error);
+    // console.error(`Error upserting data for ${ticker}:`, error);
   } else {
-    console.log(`Successfully initialized data for ${ticker} with last_updated: ${todayEST}`);
+    // console.log(`Successfully initialized data for ${ticker} with last_updated: ${todayEST}`);
   }
   
   return response_historical;

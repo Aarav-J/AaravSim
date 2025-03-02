@@ -116,7 +116,7 @@ const AuthDashboard = () => {
     
     if (error) {
       setError('Error setting username. Please try again.')
-      console.log(error)
+      // console.log(error)
     } else {
       setNeedUsername(false)
       // Complete user setup with username

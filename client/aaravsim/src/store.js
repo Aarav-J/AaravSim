@@ -16,7 +16,7 @@ const useStore = create((set, get) => ({
     pendingUserId: null, 
     pendingUserName: '',
     setPendingUsername: (isPending, userId = null, userName = '') => {
-        console.log("Setting pending username:", isPending, userId, userName);
+        // console.log("Setting pending username:", isPending, userId, userName);
         set({ 
           pendingUsername: isPending,
           pendingUserId: isPending ? userId : null,
@@ -24,28 +24,28 @@ const useStore = create((set, get) => ({
         });
       },
       setSelectedDashboard: (dashboard) => {
-        console.log('set selected dashboard: ', dashboard);
+        // console.log('set selected dashboard: ', dashboard);
         // If we have a pending username setup, keep showing auth dashboard
         if (get().pendingUsername && dashboard !== 'auth') {
-          console.log("Keeping auth dashboard open for username setup");
+          // console.log("Keeping auth dashboard open for username setup");
           return;
         }
         set({ selectedDashboard: dashboard });
       },
     setSession: (session) => {
-        console.log("Setting session:", session ? "exists" : "null");
+        // console.log("Setting session:", session ? "exists" : "null");
         const currentDashboard = get().selectedDashboard;
         
         // Don't change dashboard to landing if we're going to auth
         if (!session && currentDashboard !== 'auth') {
-          console.log("No session, setting dashboard to landing");
+          // console.log("No session, setting dashboard to landing");
           set({ session, selectedDashboard: 'landing' });
         } else {
           set({ session });
         }
       },
       setUser: (user) => {
-        console.log("Setting user:", user ? "exists" : "null");
+        // console.log("Setting user:", user ? "exists" : "null");
         
         if (user) {
           // Clear pending username state when setting a complete user
@@ -70,7 +70,7 @@ const useStore = create((set, get) => ({
       },
       resetAppState: () => {
         const goingToAuth = get().selectedDashboard === 'auth';
-        console.log("Resetting app state, going to auth:", goingToAuth);
+        // console.log("Resetting app state, going to auth:", goingToAuth);
         
         set({
           user: null,
@@ -80,7 +80,7 @@ const useStore = create((set, get) => ({
         });
       },
       resetAuthState: () => { 
-        console.log("resetting auth state")
+        // console.log("resetting auth state")
         set({ 
             needsUsername: false, 
         })

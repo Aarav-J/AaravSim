@@ -17,11 +17,11 @@ const App = () => {
   
   // Track auth state from a central place
   useEffect(() => {
-    console.log("App effect running:", { user, selectedDashboard, pendingUsername })
+    // console.log("App effect running:", { user, selectedDashboard, pendingUsername })
     
     // Only redirect if user exists AND no pending username setup
     if (user && selectedDashboard === 'auth' && !pendingUsername) {
-      console.log("Redirecting to home because user exists")
+      // console.log("Redirecting to home because user exists")
       setSelectedDashboard('home')
     }
   }, [user, selectedDashboard, pendingUsername, setSelectedDashboard])

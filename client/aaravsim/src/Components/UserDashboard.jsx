@@ -58,7 +58,7 @@ const UserDashboard = () => {
                 gainLossPercent
               };
             } catch (err) {
-              console.error(`Failed to get current price for ${holding.ticker}:`, err);
+              // console.error(`Failed to get current price for ${holding.ticker}:`, err);
               return {
                 ...holding,
                 currentPrice: null,
@@ -79,7 +79,7 @@ const UserDashboard = () => {
         setHoldings(enhancedHoldings);
         setTotalPortfolioValue(user.accountValue + stocksValue);
       } catch (err) {
-        console.error("Error calculating portfolio value:", err);
+        // console.error("Error calculating portfolio value:", err);
       } finally {
         setPageIsLoading(false);
       }
@@ -122,10 +122,10 @@ const UserDashboard = () => {
         };
   
         setStockInfo(combinedInfo);
-        console.log("Combined Stock Info:", combinedInfo);
+        // console.log("Combined Stock Info:", combinedInfo);
         // setSelectedDashboard('stock')
       } catch (err) {
-        console.error("Error fetching stock data:", err);
+        // console.error("Error fetching stock data:", err);
       } finally {
         setIsLoading(false);
       }

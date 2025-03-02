@@ -11,7 +11,7 @@ const LandingPage = () => {
   const howItWorksRef = useRef(null); 
   const finalCtaRef = useRef(null); 
   const handleGetStarted = () => {
-    console.log("Get Started clicked, navigating to auth dashboard");
+    // console.log("Get Started clicked, navigating to auth dashboard");
     
     // Reset pending username state if it exists
     useStore.getState().setPendingUsername(false);

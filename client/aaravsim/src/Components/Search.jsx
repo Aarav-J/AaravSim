@@ -56,9 +56,9 @@ const Search = () => {
       };
 
       setStockInfo(combinedInfo);
-      console.log("Combined Stock Info:", combinedInfo);
+      // console.log("Combined Stock Info:", combinedInfo);
     } catch (err) {
-      console.error("Error fetching stock data:", err);
+      // console.error("Error fetching stock data:", err);
     } finally {
       setIsLoading(false);
     }

@@ -32,7 +32,7 @@ const SellModal = ({ isOpen, onClose }) => {
           const holdings = await getUserHoldings(user.id, stock_info.symbol);
           setUserHoldings(holdings);
         } catch (err) { 
-          console.log("Error fetching data:", err);
+          // console.log("Error fetching data:", err);
         }
       }
     }
@@ -63,9 +63,9 @@ const SellModal = ({ isOpen, onClose }) => {
     const price = stock_info.oneDayHistory.currentPrice; 
     const result = await sellTicker(user.id, stock_info.symbol, quantity, price); 
     if(result.error) { 
-      console.error("Failed to sell stock: ", result.error); 
+      // console.error("Failed to sell stock: ", result.error); 
     } else { 
-      console.log("Successfully sold stock: ", result.data);
+      // console.log("Successfully sold stock: ", result.data);
       let tempUserData = {...user};
       tempUserData.accountValue = projectedAccountValue;
       setUser(tempUserData);

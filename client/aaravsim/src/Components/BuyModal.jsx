@@ -29,7 +29,7 @@ const BuyModal = ({ isOpen, onClose }) => {
                 setTransactionHistory(returnedTransactionHistory.data);
                 // console.log(transactionHistory)
             } catch (err) { 
-                console.log("Error fetching transaction history:", err);
+                // console.log("Error fetching transaction history:", err);
             }
             
         }
@@ -57,9 +57,9 @@ const BuyModal = ({ isOpen, onClose }) => {
     const price = stock_info.oneDayHistory.currentPrice; 
     const result = await boughtTicker(user?.id, stock_info.symbol, stock_info.name, quantity, price); 
     if(result.error) { 
-        console.error("Failed to buy stock: ", result.error); 
+        // console.error("Failed to buy stock: ", result.error); 
     } else { 
-        console.log("Successfully bought stock: ", result.data);
+        // console.log("Successfully bought stock: ", result.data);
         let tempUserData = user; 
         tempUserData.accountValue = projectedAccountValue;
         setUser(tempUserData);

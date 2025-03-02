@@ -60,7 +60,7 @@ export async function getUserHoldings(userId, ticker) {
       if (error) throw error;
       return data;
     } catch (err) {
-      console.error("Error fetching user holdings:", err);
+      // console.error("Error fetching user holdings:", err);
       return null;
     }
   };
@@ -314,7 +314,7 @@ export const addToWatchlist = async (userId, ticker, stock_info) => {
       watchListToast(ticker, 'add')
       return { success: true , watchlist: updatedWatchList}
   } catch(err) { 
-    console.error("error adding to watchlist:", err)
+    // console.error("error adding to watchlist:", err)
     toast.error("Failed to add to watchlist")
     return {success: false}
   }
@@ -344,7 +344,7 @@ export const removeFromWatchList = async (userId, ticker, stock_info) => {
     return {success: true, watchlist: updatedWatchList}  // Note: fixed the success property name
 
   } catch (err) { 
-    console.error("error removing from watchlist:", err)
+    // console.error("error removing from watchlist:", err)
     toast.error("Failed to remove from watchlist")
     return {success: false}
   }
@@ -368,7 +368,7 @@ export const toggleWatchlist = async (userId, ticker, stock_info) => {
       return addToWatchlist(userId, ticker, stock_info)
     }
   } catch(err) { 
-    console.error("error toggling",err)
+    // console.error("error toggling",err)
     toast.error("Failed to toggle watchlist")
     return {success: false, error: err}  // Consistent naming
   }

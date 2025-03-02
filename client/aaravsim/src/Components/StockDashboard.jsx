@@ -76,7 +76,7 @@ const StockDashboard = () => {
           const history = await getTickerHistory(stock_info.symbol, user.id)
           setTransactionHistory(history.data || []);
         } catch (err) { 
-          console.log("Error fetching user holdings: ", err)
+          // console.log("Error fetching user holdings: ", err)
           setUserHoldings(null)
           setTransactionHistory([])
         } 
@@ -131,7 +131,7 @@ const StockDashboard = () => {
     try {
       return calculateStockStats(stock_info);
     } catch (error) {
-      console.error("Error calculating stock stats:", error);
+      // console.error("Error calculating stock stats:", error);
       return null;
     }
   }, [stock_info]);

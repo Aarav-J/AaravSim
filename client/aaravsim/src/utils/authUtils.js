@@ -3,7 +3,7 @@ import useStore from "../store"
 
 export const signOut = async () => {
   try {
-    console.log("Signing out user...");
+    // console.log("Signing out user...");
     
     
     useStore.getState().setUser(null);
@@ -15,7 +15,7 @@ export const signOut = async () => {
     useStore.getState().setSelectedDashboard('landing');
     
   } catch (error) {
-    console.error('Error signing out:', error);
+    // console.error('Error signing out:', error);
   }
 };
 export async function OauthSignIn(provider) { 
