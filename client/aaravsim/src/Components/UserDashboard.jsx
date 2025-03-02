@@ -144,11 +144,11 @@ const UserDashboard = () => {
         <div className="profile-stats">
           <div className="stat-item">
             <span className="stat-label">Member Since</span>
-            <span className="stat-value">2023</span>
+            <span className="stat-value">2025</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Trading Performance</span>
-            <span className="stat-value performance-positive">+12.4%</span>
+            <span className={`stat-value ${totalPortfolioValue-10000 >= 0 ? 'pos' : 'err'}`}>${(totalPortfolioValue-10000).toFixed(2)}({(((totalPortfolioValue - 10000)/10000)*100).toFixed(2)}%)</span>
           </div>
         </div>
       </div>

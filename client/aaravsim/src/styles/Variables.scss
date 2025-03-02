@@ -18,3 +18,11 @@ $gradient-end: $bg-color;
 $button-shadow: 0 4px 14px 0 rgba($main-color, 0.15);
 $card-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 $glow-effect: 0 0 15px rgba($main-color, 0.2);
+
+.pos { 
+    color: $pos-color !important;
+}
+
+.err { 
+    color: $error-color !important;
+}
