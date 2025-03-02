@@ -14,8 +14,8 @@ const query = 'aaravj5.pythonanywhere.com/api'
 //     // // console.log(response.data)
 //     // return response.data
 // }
-const stock_data_token = "5925c66b30d7b17b743e68a09abe5428c2d21761"
-const search_data_token = "OIkEs0K0C6G6PS4bg82uGdCmLdA4vWWo"
+
+const search_data_token = import.meta.env.VITE_SEARCH_DATA_TOKEN
 export const getNewsInfo = async (symbol) => {
     const response = await axios.get(`https://${query}/news/${symbol}`)
     return response.data
