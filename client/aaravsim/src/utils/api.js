@@ -342,7 +342,7 @@ export const getStockHistory = async (symbol) => {
     const { startDate } = getStartEndDates('5y');
     let response_api = null;
     try {
-      const response = await axios.get(`http://localhost:5001/api/daily/${ticker}/prices`, {
+      const response = await axios.get(`https://${query}/daily/${ticker}/prices`, {
         params: { startDate }
       });
       response_api = response.data;
@@ -448,7 +448,7 @@ const initializeTickerData = async (symbol) => {
   // let response_daily_stats = null; // Commented out
 
   try {
-    const histResponse = await axios.get(`http://localhost:5001/api/daily/${ticker}/prices`, {
+    const histResponse = await axios.get(`https://${query}/daily/${ticker}/prices`, {
       params: { startDate }
     });
     response_historical = histResponse.data;

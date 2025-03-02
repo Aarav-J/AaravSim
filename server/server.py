@@ -2,8 +2,10 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import yfinance as yf
 from datetime import datetime
+import requests
 app = Flask(__name__)
 # CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+STOCK_DATA_TOKEN = '5925c66b30d7b17b743e68a09abe5428c2d21761'
 @app.route('/')
 def hello_world():
     return 'Hello from Flask!'
@@ -108,6 +110,7 @@ def get_price_info(ticker):
     reco = get_recommendation(ticker)
     try:  
         return {
+            '1d': data,
             'currentPrice': current_price, 
             'recommendations': reco
         }
@@ -203,6 +206,51 @@ def stock_meta(ticker):
         return jsonify(data)
     except Exception as e:
         abort(400, description=str(e))
+
+
+
+# Endpoint to get daily prices for a ticker symbol
+@app.route('/api/daily/<symbol>/prices', methods=['GET'])
+def get_daily_prices(symbol):
+    # Optionally accept a startDate query parameter
+    startDate = request.args.get('startDate')
+    url = f'https://api.tiingo.com/tiingo/daily/{symbol}/prices'
+    params = {
+        'token': STOCK_DATA_TOKEN,
+        'resampleFreq': 'daily'
+    }
+    if startDate:
+        params['startDate'] = startDate
+
+    try:
+        response = requests.get(url, params=params, headers={'Content-Type': 'application/json'})
+        response.raise_for_status()  # Raise an error for bad status codes
+        return jsonify(response.json())
+    except requests.exceptions.RequestException as e:
+        print("Error fetching daily prices for:", symbol, e)
+        return jsonify({'error': str(e)}), 500
+
+# Endpoint to get daily fundamentals for a ticker symbol
+@app.route('/api/fundamentals/<symbol>/daily', methods=['GET'])
+def get_daily_fundamentals(symbol):
+    url = f'https://api.tiingo.com/tiingo/fundamentals/{symbol}/daily'
+    params = {'token': STOCK_DATA_TOKEN}
+    
+    try:
+        response = requests.get(url, params=params, headers={'Content-Type': 'application/json'})
+        response.raise_for_status()
+        data = response.json()
+        if isinstance(data, list) and len(data) > 0:
+            # Return the most recent (last) entry in the array
+            return jsonify(data[-1])
+        else:
+            return jsonify({'error': 'No data found for fundamentals'}), 404
+    except requests.exceptions.RequestException as e:
+        print("Error fetching daily fundamentals for:", symbol, e)
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
