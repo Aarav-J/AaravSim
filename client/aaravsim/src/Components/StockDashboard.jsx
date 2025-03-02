@@ -125,8 +125,16 @@ const StockDashboard = () => {
   }
 
   const stockStats = useMemo(() => { 
-    return calculateStockStats(stock_info)
-  }, [])
+    // Only calculate if stock_info exists
+    if (!stock_info) return null;
+    
+    try {
+      return calculateStockStats(stock_info);
+    } catch (error) {
+      console.error("Error calculating stock stats:", error);
+      return null;
+    }
+  }, [stock_info]);
   
   return (
     <div className='stock-dashboard'>
