@@ -5,6 +5,7 @@ import { formatNumber } from '../utils/tickerUtils';
 import { getStockHistory, get1dStockData, getDailyStats } from '../utils/api';
 import { LoadingOverlay } from './LoadingComponent';
 import "../styles/UserDashboard.scss";
+import AccountValTicker from './AccountValTicker';
 const UserDashboard = () => {
   const user = useStore((state) => state.user);
   const [totalPortfolioValue, setTotalPortfolioValue] = useState(0);
@@ -92,7 +93,31 @@ const UserDashboard = () => {
   //   return <div className="loading">Loading portfolio data...</div>;
   // }
   
-
+  const [watchlistPrices, setWatchlistPrices] = useState({});
+    
+  // Rest of your existing state and functions
+  
+  // Add a useEffect to fetch current prices for watchlist items
+  useEffect(() => {
+    const fetchWatchlistPrices = async () => {
+      if (!user?.watchlist?.length) return;
+      
+      const prices = {};
+      for (const item of user.watchlist) {
+        try {
+          const currentPrice = await getCurrentPrice(item.ticker);
+          prices[item.ticker] = currentPrice;
+        } catch (err) {
+          console.error(`Failed to get price for ${item.ticker}:`, err);
+          prices[item.ticker] = 'N/A';
+        }
+      }
+      
+      setWatchlistPrices(prices);
+    };
+    
+    fetchWatchlistPrices();
+  }, [user?.watchlist]);
 
   const handleTickerClick = async (ticker, name) => { 
       
@@ -131,6 +156,12 @@ const UserDashboard = () => {
       }
       
   }
+
+  const getCurrentPrice = async (ticker) => { 
+    const priceData = await get1dStockData(ticker);
+    return priceData.currentPrice;
+  }
+  
   
   return (
     <div className="user-dashboard">
@@ -154,7 +185,6 @@ const UserDashboard = () => {
       </div>
     </div>
       <h1>Portfolio Overview</h1>
-      
       <div className="portfolio-summary">
         <div className="summary-card">
           <h3>Total Portfolio Value</h3>
@@ -173,6 +203,48 @@ const UserDashboard = () => {
           </span>
         </div>
       </div>
+      <div className="graphValArea">
+        <AccountValTicker/>
+        <div className="watchlistArea">
+          <h2>Watchlist</h2>
+          <div className="watchlist">
+            {user?.watchlist?.length > 0 ? (
+              user.watchlist.map((ticker) => (
+                
+                <div key={ticker.ticker} className="watchlist-item" onClick={() => handleTickerClick(ticker.ticker)}>
+                  <div className='meta-information'>
+                  <span className="ticker">{ticker.ticker}</span>
+                  <span className="name">{ticker.name}</span>
+                  </div>
+                  <div className='price-information'>
+                    <div className="price-entry">
+                      <span className="price-label">Added at:</span>
+                      <span className="price">${ticker.price_at_watchlist.toFixed(2)}</span>
+                    </div>
+                    <div className="price-entry">
+                      <span className="price-label">Current:</span>
+                      <span className="price">${watchlistPrices[ticker.ticker]?.toFixed(2) || 'N/A'}</span>
+                    </div>
+                    {watchlistPrices[ticker.ticker] && (
+                      <div className="price-change">
+                        <span className={`change ${(watchlistPrices[ticker.ticker] - ticker.price_at_watchlist) >= 0 ? 'pos' : 'err'}`}>
+                          {((watchlistPrices[ticker.ticker] - ticker.price_at_watchlist) >= 0 ? '+' : '')}
+                          {(watchlistPrices[ticker.ticker] - ticker.price_at_watchlist).toFixed(2)} 
+                          ({(((watchlistPrices[ticker.ticker] - ticker.price_at_watchlist) / ticker.price_at_watchlist) * 100).toFixed(2)}%)
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>Your watchlist is empty.</p>
+            )}
+          </div>
+        </div>
+      </div>
+      
+     
       
       {holdings.length > 0 ? (
         <div className="holdings-table">
